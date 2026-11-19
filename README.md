@@ -1,232 +1,225 @@
-# 💻 MTs School Admin Dashboard & Notification Portal (Flutter Web & Desktop)
+# 💻 MTs Suguja Attendance — Web & Desktop Admin Dashboard
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?style=for-the-badge&logo=dart&logoColor=white)
-![Backend](https://img.shields.io/badge/Backend-Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![OneSignal](https://img.shields.io/badge/Push-OneSignal%20REST-E51B24?style=for-the-badge&logo=onesignal&logoColor=white)
-![Tests](https://img.shields.io/badge/Tests-Passed-brightgreen?style=for-the-badge&logo=flutter)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+![Supabase](https://img.shields.io/badge/Backend-Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![OneSignal](https://img.shields.io/badge/Push-OneSignal_REST-E51B24?style=for-the-badge&logo=onesignal&logoColor=white)
+![WhatsApp](https://img.shields.io/badge/WhatsApp-WAHA_Gateway-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)
 
-> **Web & Desktop Admin Dashboard Portal** berbasis **Flutter** dan **Supabase** untuk Sistem Informasi Manajemen Sekolah MTs. Dilengkapi dengan **Sistem Notifikasi Mobile (OneSignal Push Notification REST API)**, pembuat **Kartu Presensi Siswa berbasis QR Code & Cetak PDF**, manajemen status kelulusan siswa, caching performa tinggi (*Stale-While-Revalidate*), verifikasi surat izin digital, serta ekspor laporan multi-format (Excel, CSV, & PDF).
-
----
-
-## 📌 Tentang Aplikasi
-
-Aplikasi ini bertindak sebagai pusat kendali administrasi sekolah (*Admin Central Hub*) yang mengintegrasikan pengelolaan master data siswa, guru, rombel kelas, rekapitulasi presensi harian secara *real-time*, hingga komunikasi langsung dengan orang tua/wali murid melalui kanal **Push Notification Mobile**.
-
-Dirancang menggunakan prinsip **Clean & Modular Architecture** dengan pemisahan *Core Services*, *Models*, *Repositories*, *Logic/Controllers*, dan *Presentation Layer*, aplikasi ini mendukung pengoperasian penuh di antarmuka **Web Browser** maupun **Desktop (Windows/macOS/Linux)**.
-
-Aplikasi ini terhubung langsung dengan ekosistem aplikasi mobile: **Mobile App Guru & Orang Tua (`UtsMobileLanjut` / `mts-school-mobile-app`)**.
+> **Web & desktop admin portal** built with **Flutter** and **Supabase** for the attendance information system of **MTs Sunan Gunung Jati (Suguja)**. It manages students, teachers, and classes, generates QR student cards as printable PDFs, verifies digital leave letters, sends notifications to parents through **WhatsApp (WAHA)** and **OneSignal push**, and exports reports to Excel, CSV, and PDF.
 
 ---
 
-## 🚀 Fitur-Fitur Utama
+## 📌 Project Overview
 
-### 📊 1. Dashboard Interaktif & Statistik Real-Time
-* **Statistik Kehadiran Harian**: Ringkasan persentase kehadiran, jumlah siswa hadir, terlambat, izin, sakit, dan alpa secara instan.
-* **Grafik Visualisasi Presensi (`fl_chart`)**: Grafik tren kehadiran interaktif dengan kalkulasi dinamis batas sumbu Y dan interval otomatis.
-* **Aktivitas & Log Cepat**: Pemantauan aktivitas presensi terbaru dan status operasional sistem.
+This application is the school's administration hub. It brings together master data (students, teachers, classes), real-time daily attendance records, and communication with parents through WhatsApp messages and mobile push notifications.
 
-### 🔔 2. Sistem Push Notification & Broadcast Pengumuman (OneSignal)
-* **OneSignal Push Notification**: Integrasi REST API OneSignal untuk menyiarkan pengumuman langsung ke perangkat *smartphone* wali murid dan guru.
-* **Pusat Simulasi & Pengujian Notifikasi**: Halaman simulasi notifikasi presensi, template pesan kehadiran, serta riwayat siaran (*broadcast*) pengumuman.
-* **Segmentasi Pengiriman**: Mendukung broadcast ke *Semua Wali Murid*, *Per Rombel Kelas*, maupun *Per Siswa*.
+It is organized into **core services, models, repositories, logic/controllers, and a presentation layer**, and runs both in a **web browser** and as a **desktop app** (Windows, macOS, Linux).
 
-### ⚡ 3. Master Data Caching (Stale-While-Revalidate)
-* **MasterDataCacheService**: Mengurangi *latency* dan beban query database Supabase dengan strategi caching cerdas untuk data Kelas, Guru, dan Siswa.
-* **Auto-Invalidation**: Cache otomatis diperbarui saat terjadi penambahan, pengeditan, atau penghapusan data master (*event-driven invalidation*).
-
-### 🏷️ 4. Generator Kartu Siswa & QR Code Presensi (`barcode_widget`, `pdf`, `printing`)
-* Pembuatan **QR Code unik** untuk setiap siswa (`SiswaModel`) yang dapat dipindai (*scan*) oleh guru menggunakan aplikasi mobile companion.
-* **Export & Batch Print ke PDF**: Cetak kartu identitas siswa dalam format lembar dokumen PDF siap cetak dengan *loading progress indicator*.
-* Mendukung unduhan individual maupun *bulk export* per kelas.
-
-### 👨‍🎓 5. Manajemen Master Data Lengkap (Siswa, Guru, Kelas)
-* **Siswa**: Pengelolaan biodata lengkap, NISN, kontak wali, dan status keanggotaan (*Aktif, Lulus, Alumni, Mutasi / Tidak Aktif*).
-* **Guru**: Pendataan tenaga pendidik, NIP, mata pelajaran, dan penetapan wali kelas (`GuruModel`).
-* **Kelas**: Manajemen rombel, kapasitas ruang, tingkat kelas, dan relasi wali kelas (`KelasModel`).
-* **Pencarian Cepat & Debouncing**: Input pencarian responsif dengan utility `Debouncer`.
-
-### ⏱️ 6. Rekapitulasi Presensi & Waktu Presensi Detail
-* Pencatatan riwayat presensi harian dengan informasi **Waktu Masuk**, **Waktu Pulang**, status kehadiran, dan audit jejak pembaruan (`updated_by`).
-* Filter fleksibel berdasarkan rentang tanggal, status kehadiran, dan rombel kelas.
-* Penyesuaian presensi manual oleh admin dengan log perubahan.
-
-### 📝 7. Manajemen Surat Perizinan & Sakit Digital
-* Verifikasi dan persetujuan (*Approve / Reject*) surat perizinan yang diajukan oleh wali murid melalui aplikasi mobile.
-* Pratinjau lampiran foto/dokumen surat keterangan dokter secara langsung di dasbor.
-* Sinkronisasi otomatis status surat dengan rekapitulasi kehadiran harian siswa.
-
-### 🔒 8. Autentikasi, Pemulihan Password & Profil Admin
-* Sistem login aman berbasis Supabase Auth.
-* **Alur Pemulihan Kata Sandi (*Password Recovery*)**: Pengiriman tautan reset kata sandi ke email admin dengan halaman pembaruan password terproteksi.
-* **Manajemen Profil Admin**: Pembaruan nama lengkap, email, foto profil, dan kredensial keamanan.
-
-### 📁 9. Ekspor Laporan Multi-Format
-* **Excel (`.xlsx`) & CSV**: Ekspor data siswa, guru, rombel kelas, dan rekapitulasi presensi ke format spreadsheet (`excel`, `csv`).
-* **Laporan PDF**: Pembuatan laporan cetak resmi dengan tata letak profesional.
+It shares one Supabase database with the mobile companion app **[Mobile-Absensi-Siswa-Mts-Suguja](https://github.com/Aldidwiirawan/Mobile-Absensi-Siswa-Mts-Suguja)** used by teachers, gate scanner officers, and parents.
 
 ---
 
-## 🛠️ Stack Teknologi & Pustaka
+## 🚀 Key Features
 
-| Komponen | Pustaka / Teknologi | Keterangan |
+### 📊 Interactive Dashboard
+- Daily attendance summary: attendance rate and the number of students present, late, on leave, sick, and absent.
+- Interactive attendance trend chart (`fl_chart`) with a dynamic Y-axis range and interval.
+- Recent attendance activity and system status.
+
+### 🔔 Notifications & Announcements
+- **WhatsApp (WAHA)** — direct messages to parents for a single student or a whole class, plus a connection test. Broadcasting to *all* parents via WhatsApp is intentionally skipped to avoid the sender number being banned; OneSignal is used instead.
+- **OneSignal push notifications** through the REST API to parents' and teachers' phones.
+- Targeting: all parents, per class, or per student.
+- Notification test center with attendance alert simulation, message template preview, announcement history, and gateway diagnostics.
+
+### ⚡ Master Data Caching (Stale-While-Revalidate)
+- `MasterDataCacheService` reduces latency and database load for classes, teachers, and students.
+- The cache is invalidated automatically whenever master data is created, updated, or deleted.
+
+### 🏷️ QR Student Card Generator (`barcode_widget`, `pdf`, `printing`)
+- A unique QR code for every student, scanned by the mobile app at the school gate.
+- Export and batch-print student cards to PDF with a progress indicator, per student or per class.
+
+### 👨‍🎓 Master Data Management
+- **Students** — biodata, NISN, parent contact, and status (*Active, Graduated, Alumni, Transferred / Inactive*).
+- **Teachers** — staff data, NIP, subjects, and homeroom assignment.
+- **Classes** — class groups, capacity, grade level, and homeroom teacher.
+- Debounced instant search.
+
+### ⏱️ Attendance Records
+- Daily records with **check-in time**, **check-out time**, status, and an `updated_by` audit trail.
+- Filters by date range, status, and class.
+- Manual adjustments by the admin.
+
+### 📝 Digital Sick & Leave Letters
+- Approve or reject letters submitted by parents from the mobile app.
+- Preview the attached photo or doctor's note directly in the dashboard.
+- Letter status is synchronized with the daily attendance record.
+
+### 🔒 Authentication & Admin Profile
+- Secure login with Supabase Auth.
+- Password recovery via an email reset link and a protected update-password page.
+- Admin profile: name, email, phone/WhatsApp number, photo, and credentials.
+
+### 📁 Report Export
+- **Excel (`.xlsx`) and CSV** export for students, teachers, classes, and attendance recaps.
+- **PDF** reports with a print-ready layout.
+
+---
+
+## 🛠️ Technology Stack
+
+| Component | Library / Technology | Purpose |
 | :--- | :--- | :--- |
-| **Framework Utama** | [Flutter 3.x](https://flutter.dev/) | Mendukung target Web & Desktop |
-| **Bahasa Pemrograman** | [Dart 3.x](https://dart.dev/) | Null safety & Modern OOP |
-| **Backend & Database** | Supabase Flutter (`supabase_flutter`) | PostgreSQL, Auth, Storage, Realtime |
-| **Push Notification** | OneSignal REST API | Notifikasi broadcast ke mobile app |
-| **State Management** | Provider Pattern (`provider`) | Arsitektur state terpusat & teruji |
-| **Visualisasi Data** | `fl_chart` | Grafik statistik presensi interaktif |
-| **Barcode & QR Code** | `barcode_widget`, `qr` | Generator kode presensi siswa |
-| **Dokumen & Cetak** | `pdf`, `printing` | Rendering & printing dokumen PDF |
-| **Ekspor Spreadsheet** | `excel`, `csv`, `archive` | Ekspor rekap data multi-format |
-| **Manajemen Window** | `window_manager` | Pengaturan ukuran dan window desktop |
-| **Konfigurasi Lingkungan**| `flutter_dotenv` | Manajemen variabel environment `.env` |
-| **File Picker** | `file_picker`, `image_picker` | Unggah berkas dan lampiran |
+| **Framework** | [Flutter 3.x](https://flutter.dev/) | Web and desktop targets |
+| **Language** | [Dart 3.x](https://dart.dev/) | Null-safe, modern OOP |
+| **Backend & Database** | `supabase_flutter` | PostgreSQL, Auth, Storage, Realtime |
+| **WhatsApp Gateway** | [WAHA](https://waha.devlike.pro/) (WhatsApp HTTP API) via `http` | Direct WhatsApp messages to parents |
+| **Push Notifications** | OneSignal REST API | Push to the mobile app |
+| **State Management** | `provider` | Centralized app state |
+| **Charts** | `fl_chart` | Attendance statistics |
+| **QR Code** | `barcode_widget` | Student card QR codes |
+| **Documents & Printing** | `pdf`, `printing` | PDF rendering and printing |
+| **Spreadsheet Export** | `excel`, `csv`, `archive` | Multi-format report export |
+| **Desktop Window** | `window_manager` | Desktop window size and behavior |
+| **Configuration** | `flutter_dotenv` | Environment variables from `.env` |
+| **File Upload** | `file_picker`, `image_picker` | File and image attachments |
 
 ---
 
-## 📁 Struktur Direktori & Arsitektur
+## 🌐 System Architecture
+
+```text
+   ┌──────────────────────────────┐        ┌──────────────────────────────┐
+   │ 💻 Admin Dashboard (this repo) │        │ 📱 Mobile Companion App       │
+   │   Flutter Web & Desktop       │        │   Teachers, scanner, parents │
+   └───────┬───────────┬──────────┘        └──────────────┬───────────────┘
+           │           │                                   │
+           │           ▼                                   │
+           │   ┌───────────────────┐                       │
+           │   │ ☁️ Supabase        │ ◄─────────────────────┘
+           │   │ PostgreSQL · Auth │
+           │   │ Storage · Realtime│
+           │   └───────────────────┘
+           │
+           ├──────────► 🟢 WAHA WhatsApp Gateway ──► parents' WhatsApp
+           └──────────► 🔔 OneSignal REST API ─────► mobile app push notifications
+```
+
+---
+
+## 📁 Project Structure
 
 ```text
 lib/
-├── main.dart                               # Inisialisasi Environment, Supabase, dan Window Manager
+├── main.dart                               # Environment, Supabase, and window manager initialization
 └── web_admin/
-    ├── core/                               # Komponen Inti & Konfigurasi Global
-    │   ├── constants.dart                  # Nama Tabel Supabase, Enums, StatusColors, Role
-    │   ├── exceptions.dart                 # Custom AppException, RepositoryException
-    │   ├── theme.dart                      # Skema Warna & Tema Material 3
-    │   ├── services/                       # Core Services Layer
-    │   │   ├── error_handler_service.dart  # Centralized Error Handling & Dialogs
-    │   │   ├── logging_service.dart        # Logger & Logging Utilities
-    │   │   ├── master_data_cache_service.dart # SWR Caching untuk Kelas, Guru, Siswa
-    │   │   ├── notification_service.dart   # Service Notifikasi & Broadcast
-    │   │   └── onesignal_service.dart      # REST Client OneSignal Push Notification
-    │   └── utils/
-    │       └── debouncer.dart              # Search Input Debouncer Utility
+    ├── core/
+    │   ├── constants.dart                  # Table names, enums, status colors, roles, gateway config checks
+    │   ├── exceptions.dart                 # AppException, RepositoryException
+    │   ├── theme.dart                      # Material 3 theme
+    │   ├── services/
+    │   │   ├── error_handler_service.dart  # Centralized error handling & dialogs
+    │   │   ├── logging_service.dart        # Logging utilities
+    │   │   ├── master_data_cache_service.dart # SWR cache for classes, teachers, students
+    │   │   ├── notification_service.dart   # WhatsApp (WAHA) & push notification service
+    │   │   └── onesignal_service.dart      # OneSignal REST client
+    │   └── utils/debouncer.dart            # Search input debouncer
     │
-    ├── data/                               # Data Layer
-    │   ├── models/                         # Type-Safe Data Models (fromJson, toJson, copyWith)
-    │   │   ├── absensi_model.dart          # Presensi (Waktu Masuk, Waktu Pulang, updated_by)
-    │   │   ├── guru_model.dart             # Data Guru & Penugasan Wali Kelas
-    │   │   ├── kelas_model.dart            # Rombel Kelas & Kapasitas
-    │   │   ├── pengumuman_model.dart       # Model Broadcast & Riwayat Pengumuman
-    │   │   ├── siswa_model.dart            # Data Siswa, NISN, Kontak Wali & Status
-    │   │   └── surat_model.dart            # Surat Perizinan / Sakit Siswa
-    │   └── repositories/                   # Supabase Data Repositories & Cache Invalidation
-    │       ├── absensi_repository.dart
-    │       ├── guru_repository.dart
-    │       ├── kelas_repository.dart
-    │       ├── siswa_repository.dart
-    │       └── surat_repository.dart
+    ├── data/
+    │   ├── models/                         # absensi, guru, kelas, pengumuman, siswa, surat
+    │   └── repositories/                   # Supabase repositories with cache invalidation
     │
-    ├── logic/                              # Business Logic & Controllers
-    │   ├── absensi_controller.dart
-    │   ├── kelas_logic.dart
-    │   └── siswa_logic.dart
+    ├── logic/                              # Controllers: absensi_controller, kelas_logic, siswa_logic
     │
-    └── presentation/                       # Presentation Layer (UI)
-        ├── pages/                          # Halaman Utama Dashboard
-        │   ├── absensi_page.dart           # Rekapitulasi & Filter Presensi
-        │   ├── dashboard_page.dart         # Statistik & Grafik Dashboard
-        │   ├── guru_page.dart              # Manajemen Guru
-        │   ├── kelas_page.dart             # Manajemen Rombel Kelas
-        │   ├── notifikasi_test_page.dart   # Pengujian Notifikasi & Broadcast
-        │   ├── password_recovery_screen.dart # Form Pemulihan Kata Sandi
-        │   ├── profil_admin_page.dart      # Manajemen Profil Admin
-        │   ├── siswa_page.dart             # Manajemen Siswa & QR Code Generator
-        │   └── surat_page.dart             # Verifikasi Surat Izin / Sakit
-        └── widgets/                        # Modular Reusable Sub-Widgets
-            ├── dashboard/
-            │   └── dashboard_widgets.dart  # Stat Cards, Chart Components
-            └── notifikasi/
-                ├── gateway_diagnostics_card.dart # Diagnostik Status Server Gateway
-                ├── notifikasi_dialogs.dart       # Dialog Pratinjau Template & Target Badge
-                ├── pengumuman_form_card.dart     # Form Broadcast Pengumuman
-                ├── presensi_simulation_card.dart # Simulasi Alert Presensi
-                └── riwayat_pengumuman_card.dart  # Kartu Riwayat Pesan Notifikasi
+    └── presentation/
+        ├── pages/                          # dashboard, siswa (QR cards), guru, kelas, absensi,
+        │                                   # surat, notifikasi_test, profil_admin, password_recovery
+        └── widgets/
+            ├── dashboard/                  # Stat cards & chart components
+            └── notifikasi/                 # Gateway diagnostics, announcement form, simulation, history
+
+test/
+├── unit/                                   # Cache service, models, notification enums
+└── widget/                                 # Notification dialog widgets
 ```
 
 ---
 
-## ⚙️ Panduan Instalasi & Menjalankan Aplikasi
+## ⚙️ Installation & Setup
 
-### 1. Prasyarat Sistem
-* [Flutter SDK](https://flutter.dev/docs/get-started/install) versi 3.x atau lebih baru.
-* [Dart SDK](https://dart.dev/get-dart) versi 3.x.
-* Web Browser (Google Chrome / Edge) atau C++ Desktop Build Tools (untuk Windows Desktop).
+### Prerequisites
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) 3.x (Dart 3.x)
+- Google Chrome / Edge for the web build, or the C++ desktop build tools for Windows
+- A Supabase project
+- Optional: a running [WAHA](https://waha.devlike.pro/) server and a OneSignal app for notifications
 
-### 2. Clone Repositori
+### 1. Clone the repository
 ```bash
-git clone https://github.com/AndhikaBagus115/SIM-Dasbor-Absensi-Mts-Suguja.git
+git clone https://github.com/Aldidwiirawan/SIM-Dasbor-Absensi-Mts-Suguja.git
 cd SIM-Dasbor-Absensi-Mts-Suguja
 ```
 
-### 3. Konfigurasi Environment (`.env`)
-Salin file `.env.example` menjadi `.env`:
-```bash
-cp .env.example .env
-```
-Sesuaikan konfigurasi pada file `.env`:
-```env
-# Supabase Configuration
-SUPABASE_URL=https://your-project-url.supabase.co
-SUPABASE_ANON_KEY=your-anon-key-here
-
-# OneSignal Push Notification Configuration
-ONESIGNAL_APP_ID=your-onesignal-app-id-here
-ONESIGNAL_REST_API_KEY=your-onesignal-rest-api-key-here
-
-# App Configuration
-APP_ENVIRONMENT=development
-```
-
-### 4. Unduh Dependensi
+### 2. Install dependencies
 ```bash
 flutter pub get
 ```
 
-### 5. Menjalankan Aplikasi
-* **Jalankan di Web Browser (Chrome)**:
-  ```bash
-  flutter run -d chrome
-  ```
-* **Jalankan di Desktop Windows**:
-  ```bash
-  flutter run -d windows
-  ```
+### 3. Create the environment file
+```bash
+cp .env.example .env
+```
+Fill in the values described below.
 
 ---
 
-## 🧪 Pengujian (Testing)
+## 🔐 Environment Variables
 
-Proyek ini dilengkapi dengan unit test dan widget test untuk memastikan integritas logika data, caching, dan komponen antarmuka.
+| Variable | Required | Description |
+| :--- | :---: | :--- |
+| `SUPABASE_URL` | ✅ | Your Supabase project URL |
+| `SUPABASE_ANON_KEY` | ✅ | Supabase anon (public) key |
+| `WAHA_BASE_URL` | ➖ | Base URL of your WAHA server, e.g. `http://your-waha-server:3000` |
+| `WAHA_API_KEY` | ➖ | WAHA API key |
+| `WAHA_SESSION` | ➖ | WAHA session name (default: `default`) |
+| `ONESIGNAL_APP_ID` | ➖ | OneSignal app ID |
+| `ONESIGNAL_REST_API_KEY` | ➖ | OneSignal REST API key |
+| `APP_ENVIRONMENT` | ✅ | `development` or `production` |
 
-Jalankan seluruh rangkaian pengujian dengan perintah:
+WhatsApp and push notifications are only active when their variables are set; the admin profile page shows whether each gateway is configured.
+
+> ⚠️ Never commit the `.env` file or real credentials to a public repository.
+
+---
+
+## ▶️ How to Run
+
+**Web (Chrome)**
+```bash
+flutter run -d chrome
+```
+
+**Windows desktop**
+```bash
+flutter run -d windows
+```
+
+**Tests**
 ```bash
 flutter test
 ```
-
-Rangkaian pengujian mencakup:
-* `test/unit/master_data_cache_service_test.dart`: Validasi TTL, freshness, and invalidation lifecycle cache.
-* `test/unit/models_test.dart`: Validasi serialisasi/deserialisasi JSON model data.
-* `test/unit/notification_enums_test.dart`: Validasi enum kanal & tipe notifikasi.
-* `test/widget/notifikasi_dialogs_test.dart`: Pengujian widget badge target notifikasi dan info card.
+The test suite covers the master data cache (TTL, freshness, invalidation), model JSON serialization, notification enums, and notification dialog widgets.
 
 ---
 
-## 👥 Ekosistem & Aplikasi Terkait
+## 👨‍💻 Author
 
-Proyek ini dirancang untuk beroperasi secara berdampingan dengan:
-* **Mobile App Guru & Orang Tua**: Aplikasi mobile Flutter untuk pencatatan presensi dengan pemindaian QR code dan pengajuan surat izin oleh orang tua.
-* **OneSignal Service**: Layanan push notification untuk notifikasi real-time di aplikasi mobile.
+**SIM Absensi MTs Suguja** is a team project by five students: a Flutter admin dashboard (this repository) and a Flutter mobile app that share one Supabase database.
 
----
+Team: [@AndhikaBagus115](https://github.com/AndhikaBagus115), [@Sheva1012](https://github.com/Sheva1012), [@adhito18](https://github.com/adhito18), [@bimaibra](https://github.com/bimaibra), and [@Aldidwiirawan](https://github.com/Aldidwiirawan).
 
-## 👨‍💻 Penulis & Lisensi
-
-Dikembangkan oleh **Andhika Bagus Satria** & Tim untuk Sistem Informasi Manajemen Sekolah MTs.
-
-* **Lisensi**: Open-source di bawah lisensi [MIT License](LICENSE).
+**Aldi Dwi Irawan** — built the **Teacher Data (Data Guru)** and **Attendance Data (Data Absensi)** pages of this dashboard.
+- GitHub: [@Aldidwiirawan](https://github.com/Aldidwiirawan)
+- Portfolio: [aldidwiirawan.vercel.app](https://aldidwiirawan.vercel.app)
+- Email: aldidwiirawan2004@gmail.com
